@@ -26,7 +26,7 @@
             version = "0.1.0";
             src = ./.;
 
-            cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+            cargoHash = "sha256-rUWgFFXbp+v2r45XGrduoGvzGFOMqjYS8KStuqnGCD8=";
 
             nativeBuildInputs = with pkgs; [ pkg-config makeWrapper ];
             buildInputs = with pkgs; [ openblas ]
