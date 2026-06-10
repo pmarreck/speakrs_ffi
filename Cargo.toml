@@ -1,0 +1,41 @@
+[package]
+name = "speakrs_ffi"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "Apache-2.0"
+description = "C FFI for the speakrs speaker-diarization library — PCM samples in, JSON speaker turns out"
+repository = "https://github.com/pmarreck/speakrs_ffi"
+
+[lib]
+name = "speakrs_ffi"
+# cdylib for runtime loading (Python ctypes etc.), staticlib for embedding,
+# rlib so `cargo test` can call the extern fns from Rust.
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Nix-friendly feature set — nothing downloads at BUILD time:
+#   - no default-linalg: that pulls intel-mkl-static on x86_64 which fetches
+#     MKL during the build (sandbox-hostile). openblas-system links the
+#     distro/nix openblas via pkg-config instead.
+#   - load-dynamic: ort dlopens libonnxruntime at RUNTIME (ORT_DYLIB_PATH)
+#     instead of downloading prebuilt ONNX Runtime binaries during the build.
+#   - online: hf-hub model download at RUNTIME (first use), which is the
+#     user's machine and their choice — never the build sandbox.
+[dependencies.speakrs]
+version = "0.4.2"
+default-features = false
+features = ["online", "openblas-system", "load-dynamic"]
+
+# CoreML acceleration on macOS only (objc2 bindings won't build elsewhere).
+# Cargo unions these features with the base declaration above on macOS.
+[target.'cfg(target_os = "macos")'.dependencies.speakrs]
+version = "0.4.2"
+default-features = false
+features = ["online", "openblas-system", "load-dynamic", "coreml"]
+
+[profile.release]
+lto = true

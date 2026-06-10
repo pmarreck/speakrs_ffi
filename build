@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Build the full package (lib + header + CLI) via Nix — sandboxed and
+# deterministic. Result lands in ./result (lib/, include/, bin/).
+set -u
+cd "$(dirname "$0")"
+nix build "$@" && echo "Built: $(readlink result)" && ls result/lib result/bin result/include

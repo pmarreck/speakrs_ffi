@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Full test suite: Rust unit tests (FFI surface) + C CLI tests.
+# All tests are offline/model-free; accumulates failures as exit code.
+set -u
+
+cd "$(dirname "$0")"
+failures=0
+
+echo "=== cargo test (FFI surface) ==="
+nix develop -c cargo test --release --quiet || failures=$((failures + 1))
+
+echo
+echo "=== building C CLI against local lib ==="
+nix develop -c bash -c '
+	set -u
+	cargo build --release --quiet || exit 1
+	mkdir -p target/cli
+	cc cli/speakrs_diarize.c -I include -L target/release -lspeakrs_ffi \
+		-Wl,-rpath,"$PWD/target/release" -O2 -o target/cli/speakrs-diarize
+' || failures=$((failures + 1))
+
+if [ -x target/cli/speakrs-diarize ]; then
+	echo
+	echo "=== CLI tests ==="
+	SPEAKRS_DIARIZE_BIN="$PWD/target/cli/speakrs-diarize" bash tests/cli/test_cli.bash || failures=$((failures + 1))
+else
+	echo "CLI binary missing — skipping CLI tests (counted as failure)" >&2
+	failures=$((failures + 1))
+fi
+
+echo
+if [ "$failures" -eq 0 ]; then
+	echo "ALL TEST SUITES PASSED"
+else
+	echo "$failures suite(s) FAILED" >&2
+fi
+exit "$failures"

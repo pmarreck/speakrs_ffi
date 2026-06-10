@@ -1,0 +1,8 @@
+target/
+result
+result-*
+*.pcm
+.DS_Store
+.direnv/
+AGENTS.md
+CLAUDE.md
