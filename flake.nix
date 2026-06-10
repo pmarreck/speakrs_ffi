@@ -29,7 +29,7 @@
             cargoHash = "sha256-rUWgFFXbp+v2r45XGrduoGvzGFOMqjYS8KStuqnGCD8=";
 
             nativeBuildInputs = with pkgs; [ pkg-config makeWrapper ];
-            buildInputs = with pkgs; [ openblas ]
+            buildInputs = with pkgs; [ openblasCompat ]
               ++ pkgs.lib.optionals isDarwin [ apple-sdk ]
               ++ pkgs.lib.optionals (!isDarwin) [ openssl ];
 
@@ -139,7 +139,7 @@
               clippy
               rustfmt
               pkg-config
-              openblas
+              openblasCompat
               onnxruntime
             ] ++ pkgs.lib.optionals isDarwin [ apple-sdk darwin.cctools ]
               ++ pkgs.lib.optionals (!isDarwin) [ openssl ];
