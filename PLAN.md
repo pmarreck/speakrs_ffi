@@ -19,4 +19,4 @@
 - [x] Two-speaker A-B-A fixture via ElevenLabs (Rachel/Adam, 30.4s) — tests/fixtures/
 - [x] tests/cli/test_functional.bash: structural assertions (2 speakers, A-B-A, talk time)
 - [x] Local pass in both coreml and cpu modes
-- [x] Sandboxed checks.functional-test green locally (2026-06-10 EST); Garnix pending
+- [x] Sandboxed checks.functional-test green locally AND on Garnix all platforms (2026-06-10 EST; caught + fixed real ILP64/LP64 BLAS bug on x86_64-linux)
