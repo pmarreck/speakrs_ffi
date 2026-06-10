@@ -4,9 +4,9 @@
 - [x] FFI surface TDD (2026-06-10 EST, 9 tests + mutation-validated): failing Rust tests → implementation (error paths, panic safety)
 - [x] C header + C CLI (2026-06-10 EST, 10 CLI tests) (`speakrs-diarize`) + bash CLI tests
 - [x] Flake package build (2026-06-10 EST: nix build + flake check green; nix-built CLI verified on real audio)
-- [ ] GitHub repo (public) + push yolo + Garnix green
+- [x] GitHub repo + Garnix green, all 5 builds incl. both Linux targets (2026-06-10 EST)
 - [x] Local real-model smoke test (2026-06-10 EST: 21.5min video → 5.8s warm, 8 speakers, 207 turns)
-- [ ] Tag v0.1.0 once smoke test passes
+- [x] Tagged 20260610.f3d64c8 (2026-06-10 EST)
 - [ ] (consumer, tracked in reclip) reclip flake input + ctypes binding + merge/naming pipeline
 
 ## Curiosity pokes

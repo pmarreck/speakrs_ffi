@@ -1,5 +1,7 @@
 # speakrs_ffi
 
+[![Garnix](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fpmarreck%2Fspeakrs_ffi%3Fbranch%3Dyolo)](https://garnix.io/repo/pmarreck/speakrs_ffi)
+
 C FFI for [speakrs](https://github.com/avencera/speakrs) — speaker diarization
 (who spoke when) with pyannote-level accuracy at hundreds-of-× realtime, callable
 from anything that speaks C: Python (`ctypes`), C, Zig, LuaJIT, Swift, …
