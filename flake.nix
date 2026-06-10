@@ -76,6 +76,32 @@
         let
           pkgs = import nixpkgs { inherit system; };
           pkg = self.packages.${system}.default;
+
+          # CPU-mode model files, pinned as fixed-output derivations so the
+          # functional check runs REAL diarization inside the pure sandbox —
+          # network only ever happens in hash-verified FODs.
+          modelFiles = {
+            "segmentation-3.0.onnx" = "sha256-A4uXF0HtYjr5dz7K/e+kt7xSNSAJnCpo+FaLJBieitk=";
+            "wespeaker-voxceleb-resnet34.onnx" = "sha256-IDpMZxEhZ1gKsfy2L0VoxjNJn7KDgFiQrr4cSFZPzA8=";
+            "wespeaker-voxceleb-resnet34.onnx.data" = "sha256-3BBeeFcVZhE4G5XMlhsnfY4eCY568ckZp3xoxyV86VY=";
+            "wespeaker-voxceleb-resnet34.min_num_samples.txt" = "sha256-5N+JHEhNeruYXa31OfoYg6ZG2rYzevXK5BWcWHtwUMw=";
+            "plda_lda.npy" = "sha256-4gybASvr0aq9paOKEn5jpDzzXevcUCcV/BQ+L7a8PEs=";
+            "plda_tr.npy" = "sha256-5wC2jLMZ3j+vtfoJPrkiLCPERwhHQfjTpTNkDUJVEO4=";
+            "plda_mu.npy" = "sha256-0obUis+Zu8HtFQL+0KPjYa5WJs4YcMi+n3OXxeR4hsY=";
+            "plda_psi.npy" = "sha256-1xKMntLyipeBlxgFExEp8HfAT5SOLfEuUtzbmfK05fU=";
+            "plda_phi.npy" = "sha256-H0A62klppYl7JJEuXCW4HtRGs6UTqQE1vvPFyIWZJnc=";
+            "plda_mean1.npy" = "sha256-5CTAw1IYKqjg9VXewfOzDimiC57Wsl0znxEq+S5R428=";
+            "plda_mean2.npy" = "sha256-b2+3CKIDcZe1uE/+qo8UDLh4CI++zWqwQq0mp2kb0s8=";
+          };
+          speakrsModels = pkgs.linkFarm "speakrs-models" (pkgs.lib.mapAttrsToList
+            (name: hash: {
+              inherit name;
+              path = pkgs.fetchurl {
+                url = "https://huggingface.co/avencera/speakrs-models/resolve/main/${name}";
+                inherit hash;
+              };
+            })
+            modelFiles);
         in
         {
           build = pkg;
@@ -85,6 +111,17 @@
             export SPEAKRS_DIARIZE_BIN=${pkg}/bin/speakrs-diarize
             export TMPDIR=$(mktemp -d)
             bash ${./tests/cli/test_cli.bash}
+            echo ok > $out
+          '';
+          # Real diarization on the committed two-speaker fixture, cpu mode,
+          # hermetic: models from pinned FODs, ORT via the CLI wrapper default.
+          functional-test = pkgs.runCommand "speakrs-ffi-functional-test"
+            { nativeBuildInputs = [ pkgs.bash pkgs.ffmpeg pkgs.python3 pkg ]; } ''
+            export SPEAKRS_DIARIZE_BIN=${pkg}/bin/speakrs-diarize
+            export SPEAKRS_FFI_MODELS_DIR=${speakrsModels}
+            export SPEAKRS_FFI_FIXTURE=${./tests/fixtures/two_speakers_16k.wav}
+            export TMPDIR=$(mktemp -d)
+            bash ${./tests/cli/test_functional.bash}
             echo ok > $out
           '';
         });

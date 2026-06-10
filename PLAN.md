@@ -14,3 +14,9 @@
 - Does CoreML mode really never dlopen ort? (verify with `--mode coreml` and no ORT_DYLIB_PATH)
 - Pipeline construction cost per call — if >1s, add opaque-handle API (new/run/free) later
 - Stereo/non-16k input is the caller's bug — consider a sample-rate sanity heuristic? (deferred; documented contract instead)
+
+## Functional fixture test (added 2026-06-10)
+- [x] Two-speaker A-B-A fixture via ElevenLabs (Rachel/Adam, 30.4s) — tests/fixtures/
+- [x] tests/cli/test_functional.bash: structural assertions (2 speakers, A-B-A, talk time)
+- [x] Local pass in both coreml and cpu modes
+- [x] Sandboxed checks.functional-test green locally (2026-06-10 EST); Garnix pending

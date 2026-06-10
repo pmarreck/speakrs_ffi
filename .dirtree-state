@@ -1,0 +1,9 @@
+# Dirtree: Stateful directory trees in the CLI for humans and LLMs. https://github.com/pmarreck/dirtree
+ver=1.2
+annotate=[
+	cli/speakrs_diarize.c = C CLI dogfooding the FFI: raw f32le PCM file/stdin -> JSON stdout
+	flake.nix = Nix build: openblas-system + ort load-dynamic = zero build-time downloads; packages/checks/devShell
+	include/speakrs_ffi.h = Public C header — the API contract all consumers compile against
+	src/lib.rs = C FFI impl: speakrs_ffi_version/diarize/free; PCM f32 in, JSON turns out; catch_unwind panic barrier; sandbox-safe error-path tests
+	tests/cli/test_cli.bash = CLI surface tests, offline error-paths only (sandbox-safe)
+]

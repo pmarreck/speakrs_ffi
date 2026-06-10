@@ -23,6 +23,11 @@ if [ -x target/cli/speakrs-diarize ]; then
 	echo
 	echo "=== CLI tests ==="
 	SPEAKRS_DIARIZE_BIN="$PWD/target/cli/speakrs-diarize" bash tests/cli/test_cli.bash || failures=$((failures + 1))
+
+	echo
+	echo "=== functional test (real models; downloads on first run) ==="
+	SPEAKRS_DIARIZE_BIN="$PWD/target/cli/speakrs-diarize" \
+		nix develop -c bash tests/cli/test_functional.bash || failures=$((failures + 1))
 else
 	echo "CLI binary missing — skipping CLI tests (counted as failure)" >&2
 	failures=$((failures + 1))

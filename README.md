@@ -88,7 +88,7 @@ lib.speakrs_ffi_free(ctypes.c_void_p(ptr))
 
 ```sh
 ./build      # nix build → result/{lib,include,bin}
-./test       # cargo unit tests + C CLI tests (all offline, no models needed)
+./test       # cargo tests + CLI tests (offline) + functional test (real models)
 ```
 
 **Nothing downloads during the build** — that's the point of this packaging:
@@ -103,6 +103,11 @@ on first use, or load offline from `models_dir`. In CoreML mode, ONNX Runtime
 is never loaded at all; for `cpu`/`cuda` modes set `ORT_DYLIB_PATH` to a
 `libonnxruntime` (the Nix-built CLI has a default wired in; the flake exposes
 it as `packages.<system>.default.passthru.ortLib`).
+
+CI runs real diarization hermetically: `checks.functional-test` pins the
+cpu-mode model files as fixed-output derivations and diarizes a committed
+two-speaker fixture (A-B-A pattern -- see `tests/fixtures/README.md`) inside
+the pure sandbox, asserting exactly two speakers and correct re-identification.
 
 ## As a flake input
 
