@@ -14,7 +14,7 @@
       packages = forAllSystems (system:
         let
           pkgs = import nixpkgs { inherit system; };
-          isDarwin = pkgs.stdenv.isDarwin;
+          isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 
           # Runtime dlopen target for ort's load-dynamic mode (cpu/cuda paths).
           # CoreML mode on macOS never touches ONNX Runtime.
@@ -129,7 +129,7 @@
       devShells = forAllSystems (system:
         let
           pkgs = import nixpkgs { inherit system; };
-          isDarwin = pkgs.stdenv.isDarwin;
+          isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
         in
         {
           default = pkgs.mkShell {
